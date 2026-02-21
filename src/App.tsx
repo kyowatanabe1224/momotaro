@@ -1,11 +1,48 @@
+import { useState, useEffect } from "react";
+import { rollDice, movePlayer } from "./logic/game";
+
+const ROWS = 4
+const COLS = 6
+
 function App() {
-  // ダミーデータ Todo:一時的
-  const ROWS = 4;
-  const COLS = 6;
-  const playerRow = 0;
-  const playerCol = 0;
-  const diceResult = 3;
-  const remainingMoves = 3;
+  const [playerRow, setPlayerRow] = useState(0)
+  const [playerCol, setPlayerCol] = useState(0)
+  const [diceResult, setDiceResult] = useState<number | null>(null)
+  const [remainingMoves, setRemainingMoves] = useState(0)
+
+  const handleRollDice = () => {
+    const result = rollDice()
+    setDiceResult(result)
+    setRemainingMoves(result)
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (remainingMoves === 0) return;
+
+      const directionMap: Record<string, 'up' | 'down' | 'left' | 'right'> = {
+        ArrowUp: 'up',
+        ArrowDown: 'down',
+        ArrowLeft: 'left',
+        ArrowRight: 'right',
+      };
+
+      const direction = directionMap[e.key];
+      if (!direction) return;
+
+      const result = movePlayer(playerRow, playerCol, direction, ROWS, COLS);
+
+      if (result.moved) {
+        setPlayerRow(result.row);
+        setPlayerCol(result.col);
+        setRemainingMoves((prev) => prev - 1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [playerRow, playerCol, remainingMoves]);
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center gap-6 p-8">
@@ -37,12 +74,11 @@ function App() {
         ))}
       </div>
       <div className="flex gap-8 text-lg">
-        <span>サイコロ: <strong>{diceResult}</strong></span>
+        <span>サイコロ: <strong>{diceResult ?? 'サイコロを振ってください'}</strong></span>
         <span>残り移動数: <strong>{remainingMoves}</strong></span>
       </div>
 
-      {/* サイコロボタン */}
-      <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl text-lg">
+      <button onClick={handleRollDice} disabled={remainingMoves > 0} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-xl text-lg">
         サイコロ
       </button>
 
