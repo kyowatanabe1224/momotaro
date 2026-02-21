@@ -1,73 +1,37 @@
-# React + TypeScript + Vite
+# 桃鉄風ゲーム（ロジック学習用）
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 目的
+サイコロを振り、十字キーで出た目の数だけ自由に移動できる桃鉄のロジックを実装する。
 
-Currently, two official plugins are available:
+## ボードの仕様
+- 6列 × 4行 = 24マス
+- マスの種類:
+  - 通常マス
+  - 🏁 ゴールマス（1つ）
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## プレイヤーの仕様
+- 1人
+- 初期位置: 任意のマス（例: 左上）
 
-## React Compiler
+## ゲームの流れ
+1. 「サイコロを振る」ボタンを押す
+2. 1〜6がランダムに出る
+3. 出た目の合計数だけ十字キーで1マスずつ移動できる
+4. 残り移動数が0になったらターン終了
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 操作仕様
+- ↑↓←→ キーで1マスずつ移動
+- 移動するたびに残り移動数が1減る
+- 端のマスでその方向キーを押しても何も起きない（残り移動数も減らない）
 
-## Expanding the ESLint configuration
+## 画面の仕様
+- 6×4のボード表示
+- プレイヤーの現在位置のハイライト
+- サイコロの結果表示
+- 残り移動数の表示
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 今回のスコープ外
+- 複数プレイヤー
+- マスの効果（お金の増減）
+- 勝敗判定
+- CPU対戦
